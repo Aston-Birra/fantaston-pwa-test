@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0a09">
+  
+<!-- FANTASTON - PWA -->
+<link rel="manifest" href="./manifest.webmanifest">
+
+<!-- Icona browser e Android -->
+<link rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="./assets/icons/icon-192.png">
+
+<!-- Icona iPhone -->
+<link rel="apple-touch-icon"
+      sizes="180x180"
+      href="./assets/icons/apple-touch-icon.png">
+
+<!-- Modalità app su iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FANTASTON">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta name="description" content="Fantaston Manager — il fantacalcio di Aston Birra.">
+  <title>Fantaston Manager | Aston Birra</title>
+
+  <link rel="stylesheet" href="./css/formazione-match.css">
+  <link rel="stylesheet" href="./css/formazione-capitano.css">
+  <link rel="stylesheet" href="./css/formazione-dragdrop.css">
+  <link rel="stylesheet" href="./css/formazione.css">
+  <link rel="icon" href="./assets/aston-birra-logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+   <link rel="stylesheet" href="./css/formazione-select.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script defer src="./js/config.js"></script>
+  <script defer src="./js/admin.js"></script>
+  <script defer src="./js/app.js"></script>
+  <script src="./js/formazione-select.js"></script>
+  <link rel="stylesheet" href="./css/home-match.css">
+  <link rel="stylesheet" href="./css/calendario-classifica.css">
+  <link rel="stylesheet" href="./css/team-logo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/figma-home.css">
+  <link rel="stylesheet" href="./css/figma-hero.css">
+  <link rel="stylesheet" href="./css/waterdrop-nav.css">
+  <link rel="stylesheet" href="./css/figma-logo-sticky.css">
+  <script src="./js/figma-theme.js"></script>
+  <link rel="stylesheet" href="./css/figma-navbar-minimal.css">
+  <link rel="stylesheet" href="./css/formazione-figma-theme.css">
+  <link rel="stylesheet" href="./css/formazione-hero-sticky.css">
+  <link rel="stylesheet" href="./css/formazione-fix-v3.css">
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol><symbol id="i-shirt" viewBox="0 0 24 24"><path d="m8 3 4 2 4-2 5 4-3 4-2-1v11H8V10l-2 1-3-4z"/></symbol><symbol id="i-team" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M2.5 20v-2a5.5 5.5 0 0 1 11 0v2zm13-14a3 3 0 0 1 0 6m1.5 2a5 5 0 0 1 4.5 5v1"/></symbol><symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v7a5 5 0 0 1-10 0zM7 5H4v3a4 4 0 0 0 4 4m9-7h3v3a4 4 0 0 1-4 4m-4 3v4m-4 2h8"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol><symbol id="i-settings" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 14h6"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v5m10-5v5M3 10h18"/></symbol></svg>
+  <div id="loadingView" class="loading-view" role="status" aria-live="polite">
+    <img src="./assets/aston-birra-logo.png" alt="Aston Birra" class="loading-logo">
+    <span class="spinner" aria-hidden="true"></span>
+    <p>Accesso a Fantaston Manager…</p>
+  </div>
+
+  <!-- LANDING ESSENZIALE: logo ufficiale, nome e login. -->
+  <div id="landingView" class="landing" hidden>
+    <main class="landing-main">
+      <div class="landing-halo">
+        <div class="crest-frame">
+          <img class="main-crest" src="./assets/aston-birra-logo.png" alt="Stemma ufficiale Aston Birra" width="1024" height="1024">
+        </div>
+      </div>
+      <span class="landing-kicker"><span class="gold-rule"></span> ASTON BIRRA · 2026/27 <span class="gold-rule"></span></span>
+      <h1 class="landing-title">FANTASTON <span>MANAGER</span></h1>
+      <button id="googleLogin" type="button" class="google-login">
+        <span class="google-symbol" aria-hidden="true"><img class="google-mark" src="./assets/google-g.png" width="22" height="22" alt=""></span>
+        <span>Continua con Google</span>
+        <svg class="button-arrow" aria-hidden="true"><use href="#i-arrow"></use></svg>
+      </button>
+      <p class="login-caption"></p>
+
+      <!-- SOCIAL: per attivare i collegamenti aggiungi href="https://..." ai due tag <a>. -->
+      <nav class="landing-social" aria-label="Seguici sui social">
+<a
+    class="social-link"
+    id="instagramLink"
+    href="https://www.instagram.com/aston.birra.2025/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Instagram Aston Birra"
+>
+    <img
+        src="./assets/instagram.svg"
+        alt="Instagram"
+        width="30"
+        height="30"
+    >
+</a>
+      </nav>
+    </main>
+      <!-- SPONSOR: segnaposto, nessun brand fittizio. Rimpiazza gli slot con <img> dei partner. -->
+      <section class="sponsors-showcase" aria-labelledby="sponsorsTitle">
+        <div class="sponsors-heading">
+          <span class="sponsors-line" aria-hidden="true"></span>
+          <h2 id="sponsorsTitle">SPONSORED BY</h2>
+          <span class="sponsors-line" aria-hidden="true"></span>
+        </div>
+        <div class="sponsors-logos" aria-label="Spazi per i loghi degli sponsor">
+          <div class="sponsor-slot"><span>LOGO 01</span></div>
+          <div class="sponsor-slot"><span>LOGO 02</span></div>
+          <div class="sponsor-slot"><span>LOGO 03</span></div>
+        </div>
+      </section>
+
+  </div>
+
+  <!-- AREA RISERVATA: una pagina per ogni voce di navigazione. -->
+  <div id="appView" class="app-frame" hidden>
+
+    <div class="app-layout">
+      <aside class="sidebar" aria-label="Menu principale desktop">
+        <span class="sidebar-title">NAVIGAZIONE</span>
+        <nav class="side-nav"><button class="nav-item is-active" type="button" data-nav="home" aria-current="page"><svg class="nav-icon" aria-hidden="true"><use href="#i-home"></use></svg><span>Home</span></button>
+<button class="nav-item" type="button" data-nav="formazione" ><svg class="nav-icon" aria-hidden="true"><use href="#i-shirt"></use></svg><span>Formazione</span></button>
+<button class="nav-item" type="button" data-nav="giocatori" ><svg class="nav-icon" aria-hidden="true"><use href="#i-team"></use></svg><span>Giocatori</span></button>
+<button class="nav-item" type="button" data-nav="classifica" ><svg class="nav-icon" aria-hidden="true"><use href="#i-trophy"></use></svg><span>Classifica</span></button>
+<button class="nav-item" type="button" data-nav="profilo" ><svg class="nav-icon" aria-hidden="true"><use href="#i-user"></use></svg><span>Profilo</span></button></nav>
+        <button type="button" class="nav-item admin-side-link" id="sideAdminLink" data-nav="admin" hidden style="display: none !important;"><svg class="nav-icon" aria-hidden="true"><use href="#i-settings"></use></svg><span>Amministrazione</span></button>
+        <div class="sidebar-footnote"><strong>ASTON BIRRA</strong><span>Fino all’ultimo sorso.</span></div>
+      </aside>
+      <main id="appMain" class="app-content">
+<!-- BENVENUTO -->
+ <!-- FIGMA HOME V1 START: Figma LiveScore inspired, Fantaston data bindings intact -->
+<section class="page fh-home" id="homePage" data-page="home">
+
+<!-- CARD FANTASQUADRA -->
+<div id="fhTeamPushCard" class="fh-team-push">
+
+  <span class="fh-team-push-welcome">
+    Bentornato, <span id="fhPushWelcome">Fantallenatore</span>
+  </span>
+
+  <div class="fh-team-push-row">
+    <strong id="fhPushTeam">La tua squadra</strong>
+
+    <span class="fh-team-push-rank">
+     <strong id="fhPushRank">—</strong>
+    </span>
+  </div>
+
+</div>
+<!-- FINE CARD FANTASQUADRA -->
+
+  <div class="fh-hero" aria-label="Aston Birra">
+    <img class="fh-hero-crest" src="./assets/aston-birra-logo.png" alt="Stemma ufficiale Aston Birra">
+  </div>
+  <!-- Identita' mantenuta esclusivamente per i collegamenti JavaScript esistenti. -->
+  <div class="fh-legacy-identity" hidden aria-hidden="true">
+    <span id="helloName">Fantallenatore</span>
+    <strong id="dashboardTeamName">Da configurare</strong>
+    <span id="coachName">—</span>
+    <img id="fhTeamLogo" alt="" hidden>
+    <span id="fhTeamFallback">★</span>
+  </div>
+
+  <div class="fh-scroll-sheet" aria-label="Contenuti Home scorrevoli">
+  <div class="fh-section-title-row"><h2 id="fhFeaturedTitle">In primo piano</h2><span>Scorri le card <span aria-hidden="true">→</span></span></div>
+  <div id="fhCarousel" class="fh-carousel" role="region" aria-labelledby="fhFeaturedTitle" aria-roledescription="carosello" tabindex="0">
+    <section class="hm-card fh-slide fh-slide-match" aria-label="Prossima partita Aston Birra">
+      <img class="hm-theme" id="homeMatchThemeImage" alt="" hidden>
+      <div class="hm-top"><span class="hm-eyebrow">Prossima partita</span><span class="hm-status" id="homeMatchStatus" role="status">Caricamento…</span></div>
+      <div class="hm-versus">
+        <div class="hm-team-identity"><span class="hm-crest"><img src="./assets/aston-birra-logo.png" alt="Logo Aston Birra"></span><strong class="hm-team">Aston Birra</strong></div>
+        <div class="fh-center-vs"><span class="hm-vs">VS</span><span class="fh-game-time" id="homeMatchKickoff">—</span></div>
+        <div class="hm-team-identity"><span class="hm-crest"><img id="homeMatchOpponentLogo" alt="Logo squadra avversaria" hidden><span class="hm-logo-fallback" aria-hidden="true">?</span></span><strong class="hm-team" id="homeMatchOpponent">Caricamento…</strong></div>
+      </div>
+      <div class="hm-countdown" role="timer"><span class="hm-countdown-label" id="homeMatchCountdownLabel">MANCANO AL CALCIO D’INIZIO</span>
+        <div class="hm-countdown-grid">
+          <div class="hm-time-unit"><span class="hm-time-number" id="homeMatchDays">--</span><small>giorni</small></div>
+          <div class="hm-time-unit"><span class="hm-time-number" id="homeMatchHours">--</span><small>ore</small></div>
+          <div class="hm-time-unit"><span class="hm-time-number" id="homeMatchMinutes">--</span><small>min</small></div>
+          <div class="hm-time-unit"><span class="hm-time-number" id="homeMatchSeconds">--</span><small>sec</small></div>
+        </div>
+      </div>
+      <button id="homeMatchFormationLink" class="hm-action" type="button" data-nav="formazione" disabled>Apri formazione</button>
+    </section>
+    <section class="fh-slide fh-slide-season" aria-label="Il rendimento della tua fantasquadra">
+      <div class="fh-season-top"><span>La tua stagione</span><svg aria-hidden="true"><use href="#i-trophy"></use></svg></div>
+      <span class="fh-total-caption">Somma fantapunti</span>
+      <strong id="fhTotalPoints" class="fh-total-number">0,0</strong>
+      <div class="fh-season-rank"><span>Posizione in classifica</span><strong id="homeRanking">—</strong></div>
+      <p id="fhSeasonMessage" class="fh-season-message"></p>
+      <button type="button" class="fh-season-link" id="fhOpenClassifica">Vai alla classifica <span aria-hidden="true">→</span></button>
+    </section>
+  </div>
+  <div class="fh-dots" aria-label="Schede in primo piano"><button type="button" class="is-active" data-fh-slide="0" aria-label="Vai alla prossima partita" aria-pressed="true"></button><button type="button" data-fh-slide="1" aria-label="Vai al rendimento fantasy" aria-pressed="false"></button></div>
+
+<!-- CALENDARIO HOME -->
+<section class="fh-calendar" aria-labelledby="fhCalendarTitle">
+
+  <h2 id="fhCalendarTitle">Calendario</h2>
+
+  <div class="hm-card fh-slide fh-slide-match fh-calendar-card">
+
+    <div class="fh-calendar-top">
+
+      <span>Aston Birra</span>
+    </div>
+
+    <div id="fhCalendarPreview" class="fh-calendar-list">
+      <p>Caricamento calendario...</p>
+    </div>
+
+    <button
+      type="button"
+      class="hm-action fh-calendar-open"
+      data-nav="classifica">
+      Apri calendario completo
+    </button>
+
+  </div>
+
+</section>
+<!-- FINE CALENDARIO HOME -->
+
+  <section class="fh-board" aria-labelledby="fhBoardHeading">
+    <header class="fh-board-header"><div><h2 id="fhBoardHeading">Bacheca eventi</h2><p>Le ultime novità dal campionato</p></div><button id="fhBoardMore" class="fh-board-more" type="button" hidden>Vedi tutti</button></header>
+    <div id="fhBoardList" class="fh-board-list" aria-live="polite"><div class="fh-board-empty">Caricamento eventi…</div></div>
+  </section>
+  <!-- Preserva il nodo legacy che app.js inizializza; il dato ufficiale è la somma punti. -->
+  <span id="homeAverage" hidden>—</span>
+  </div> <!-- fine pannello scorrevole -->
+</section>
+<!-- FIGMA HOME V1 END -->
+
+
+<section class="page" id="formazionePage" data-page="formazione" hidden>
+
+  <!-- LOGO FISSO COME NELLA HOME -->
+  <div class="fm-hero" aria-label="Aston Birra">
+    <img
+      class="fm-hero-crest"
+      src="./assets/aston-birra-logo.png"
+      alt="Stemma Aston Birra"
+    >
+  </div>
+
+  <!-- CONTENUTI CHE SCORRONO SOPRA IL LOGO -->
+  <div class="fm-scroll-sheet">
+
+    <div class="fm-formazione">
+
+
+    <h1 class="fm-heading">Schiera la <em>formazione</em></h1>
+
+
+    <div class="fm-budget-panel">
+      <div><span class="fm-label">CREDITI DISPONIBILI</span><strong>72 <small>/ 90</small></strong></div>
+      <div class="fm-budget-right"><span class="fm-label">GIOCATORI</span><strong>1 <small>/ 5</small></strong></div>
+      <div class="fm-track"><span style="width:20%"></span></div>
+    </div>
+
+    <div class="fm-section-heading"><span>In Campo</span><span>01 / 05</span></div>
+    <div class="fm-pitch">
+      <div class="fm-pitch-markings" aria-hidden="true"></div>
+      <div class="fm-positions">
+        <div class="fm-slot fm-slot-att fm-filled"><span class="fm-slot-name">ATTACCANTE</span><div class="fm-card-frame"><img src="./assets/demo-player-card.png" alt="Card dimostrativa dell'attaccante Marco Rossi"></div><span class="fm-player-hint">MARCO ROSSI <b>· 18 CR</b></span><span class="fm-captain-hint">♛ CAPITANO DA SELEZIONARE</span></div>
+        <div class="fm-slot fm-slot-cc"><span class="fm-slot-name">CENTROCAMPISTA</span><div class="fm-empty"><span>+</span><small>AGGIUNGI</small></div></div>
+        <div class="fm-slot fm-slot-jolly"><span class="fm-slot-name">JOLLY</span><div class="fm-empty"><span>+</span><small>QUALSIASI RUOLO</small></div></div>
+        <div class="fm-slot fm-slot-dif"><span class="fm-slot-name">DIFENSORE</span><div class="fm-empty"><span>+</span><small>AGGIUNGI</small></div></div>
+        <div class="fm-slot fm-slot-por"><span class="fm-slot-name">PORTIERE</span><div class="fm-empty"><span>+</span><small>AGGIUNGI</small></div></div>
+      </div>
+    </div>
+    <div class="fm-section-heading"><span>Panchina</span><span></span></div>
+
+<div class="fm-bench">
+  <div class="fm-bench-scroll" id="benchPlayers">
+    <p class="fm-bench-loading">Caricamento giocatori...</p>
+  </div>
+</div>
+
+    <div class="fm-bottom-actions"><div><strong>18 <small>CR UTILIZZATI</small></strong><span>Simulazione · nessun dato salvato</span></div><button class="fm-save" disabled>Salva formazione</button></div>
+  </div>
+ </div>
+        </section>
+
+        <section class="page" id="giocatoriPage" data-page="giocatori" hidden>
+
+          <div class="section-label-row"><h2>Rosa Aston Birra</h2><span class="small-tag" id="publicPlayerCount">—</span></div>
+          <div class="public-player-list" id="publicPlayerList" aria-live="polite"><p class="inline-status">Apri questa sezione per caricare i giocatori.</p></div>
+
+        </section>
+
+        <section class="page" id="classificaPage" data-page="classifica" hidden>
+
+  <h1 class="page-title">Classifica</h1>
+
+  <section class="fc-section" aria-label="Classifica generale">
+
+    ben
+    <div id="fcStandings" class="fc-ranking-list" aria-live="polite"><p class="fc-status">Apri Classifica per caricare le squadre.</p></div>
+  </section>
+  <section class="fc-section" aria-label="Calendario Aston Birra">
+    <h2 class="fc-section-title">Calendario Aston Birra</h2>
+    <p class="fc-subtitle">Partite future e precedenti, visibili a tutti i fantallenatori. La modifica degli incontri resta riservata agli amministratori.</p>
+    <div id="fcCalendar" aria-live="polite"><p class="fc-status">Apri Classifica per caricare il calendario.</p></div>
+  </section>
+</section>
+
+        <section class="page" id="profiloPage" data-page="profilo" hidden>
+          <div class="page-overline">AREA PERSONALE</div><h1 class="page-title">Il tuo profilo</h1>
+          <p class="page-description">Il tuo account Google e la tua fantasquadra.</p>
+          <div class="profile-card">
+            <div class="account-row"><span id="avatar" class="avatar" aria-hidden="true">A</span><div class="account-copy"><strong id="userName">Fantallenatore</strong><span id="userEmail"></span></div></div>
+            <div id="setupPanel" class="team-box" hidden>
+              <span class="micro-title">PRIMO ACCESSO</span><h2>Come si chiamerà la tua squadra?</h2>
+              <p>Scegli un nome unico: resterà lo stesso per tutta la stagione.</p>
+              <form id="teamSetupForm" class="setup-form"><label for="teamNameInput">NOME FANTASQUADRA</label><input id="teamNameInput" name="team_name" type="text" minlength="3" maxlength="32" required autocomplete="off" spellcheck="false" placeholder="Es. I Birravigliosi"><small class="setup-hint">Da 3 a 32 caratteri, nome unico.</small><label class="confirm-line" for="confirmTeamName"><input id="confirmTeamName" type="checkbox" required><span>Confermo che questo sarà il nome definitivo della mia fantasquadra.</span></label><button id="saveTeamButton" class="action action-primary" type="submit">Conferma la mia squadra</button></form>
+            </div>
+            <div id="readyPanel" class="team-box" hidden><span class="micro-title">LA TUA FANTASQUADRA</span><strong id="teamName">—</strong><p>Nome registrato per la stagione 2026/27.</p></div>
+            <section class="tl-editor" aria-label="Logo della fantasquadra">
+              <h3>Stemma della tua fantasquadra</h3>
+              <p>Carica un logo personale: comparirà accanto al nome della tua squadra in classifica. PNG, JPG o WebP, massimo 2 MB.</p>
+              <div class="tl-line">
+                <div class="tl-preview"><img id="teamLogoPreview" alt="Logo della tua fantasquadra" hidden><span id="teamLogoFallback" aria-hidden="true">★</span></div>
+                <div class="tl-controls"><label for="teamLogoInput">SELEZIONA IMMAGINE</label><input id="teamLogoInput" type="file" accept="image/png,image/jpeg,image/webp"><button id="teamLogoSave" class="action action-primary" type="button">Carica stemma</button></div>
+              </div>
+              <p id="teamLogoMessage" role="status" aria-live="polite" hidden></p>
+            </section>
+            <div id="adminBadge" class="admin-badge" hidden>✓ Account amministratore abilitato</div>
+            <button id="gotoAdmin" type="button" class="action admin-open" data-nav="admin" hidden><svg aria-hidden="true"><use href="#i-settings"></use></svg>Apri pannello amministratore<svg aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+            <button id="logoutButton" class="action action-secondary" type="button">Esci dall'account</button>
+          </div>
+        </section>
+
+        <section class="page" id="adminPage" data-page="admin" hidden>
+          <button class="back-button" type="button" data-nav="profilo">← Torna al profilo</button>
+          <!-- Pannello admin STEP 5: stessi ID e operazioni RPC già funzionanti. -->
+    <section id="adminSection" class="admin-section" aria-label="Gestione giocatori Aston Birra" hidden>
+      <div class="admin-heading">
+        <div>
+          <div class="panel-kicker">PANNELLO AMMINISTRATORE</div>
+          <h2>Calciatori Aston Birra</h2>
+          <p>Gestisci anagrafica, ruolo e quotazione iniziale. I prezzi non variano automaticamente.</p>
+        </div>
+        <span class="admin-step-pill">GESTIONE ROSA</span>
+      </div>
+
+      <div class="admin-layout">
+        <form id="playerForm" class="admin-card admin-form" autocomplete="off">
+          <h3 id="playerFormTitle">Nuovo calciatore</h3>
+          <p>Inserisci i dati di un calciatore della rosa ufficiale.</p>
+          <input type="hidden" id="playerId" value="">
+          <label for="playerName">NOME E COGNOME</label>
+          <input id="playerName" name="playerName" type="text" minlength="2" maxlength="70" required placeholder="Es. Mario Rossi">
+          <div class="admin-field-pair">
+            <div>
+              <label for="playerRole">RUOLO</label>
+              <select id="playerRole" name="playerRole" required>
+                <option value="POR">Portiere</option>
+                <option value="DIF">Difensore</option>
+                <option value="CC">Centrocampista</option>
+                <option value="ATT">Attaccante</option>
+              </select>
+            </div>
+            <div>
+              <label for="playerPrice">QUOTAZIONE</label>
+              <input id="playerPrice" name="playerPrice" type="number" inputmode="numeric" min="1" max="90" step="1" required placeholder="Es. 18">
+            </div>
+          </div>
+          <label for="playerPhoto">FOTO (URL HTTPS) · FACOLTATIVA</label>
+          <input id="playerPhoto" name="playerPhoto" type="url" inputmode="url" maxlength="500" placeholder="https://...">
+          <small class="admin-helper">Per ora usa il link pubblico a una foto. L'upload diretto arriverà in un aggiornamento.</small>
+          <div class="admin-form-actions">
+            <button id="playerSaveButton" type="submit" class="action action-primary">Aggiungi giocatore</button>
+            <button id="playerCancelButton" type="button" class="action action-secondary admin-cancel" hidden>Annulla</button>
+          </div>
+          <p id="playerFormMessage" class="admin-feedback" role="status" aria-live="polite" hidden></p>
+        </form>
+
+        <div class="admin-card admin-list-card">
+          <div class="admin-list-header">
+            <div>
+              <h3>Rosa giocatori <span id="playerCount" class="admin-count">0</span></h3>
+              <p>Puoi modificare i dati o disattivare un calciatore senza cancellarne lo storico.</p>
+            </div>
+            <button id="refreshPlayers" type="button" class="admin-refresh" aria-label="Aggiorna elenco">↻</button>
+          </div>
+          <div id="playerList" class="admin-players" aria-live="polite">
+            <p class="admin-empty">Caricamento giocatori…</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+        <!-- GESTIONE PARTITE -->
+<section id="adminMatchesSection"
+         class="admin-section"
+         aria-label="Gestione partite Aston Birra">
+
+  <div class="admin-heading">
+    <div>
+      <div class="panel-kicker">PANNELLO AMMINISTRATORE</div>
+      <h2>Gestione partite</h2>
+      <p>
+        Organizza le partite di Aston Birra e gestisci
+        l'apertura delle formazioni.
+      </p>
+    </div>
+    <span class="admin-step-pill">CALENDARIO</span>
+  </div>
+
+  <div class="admin-layout">
+
+    <form id="matchForm"
+          class="admin-card admin-form"
+          autocomplete="off">
+
+      <h3>Nuova partita</h3>
+      <p>Inserisci i dati del prossimo incontro.</p>
+
+      <label for="matchOpponent">AVVERSARIO</label>
+      <input id="matchOpponent"
+             type="text"
+             required
+             maxlength="100"
+             placeholder="Es. Real Birretta">
+
+      <label for="matchKickoff">DATA E ORA PARTITA</label>
+      <input id="matchKickoff"
+             type="datetime-local"
+             required>
+
+      <label for="matchOpponentLogo">LOGO AVVERSARIO · URL HTTPS (FACOLTATIVO)</label>
+      <input id="matchOpponentLogo" type="url" maxlength="1000" placeholder="https://...">
+      <label for="matchOpponentTheme">IMMAGINE COLORI MAGLIA · URL HTTPS (FACOLTATIVO)</label>
+      <input id="matchOpponentTheme" type="url" maxlength="1000" placeholder="https://...">
+      <div class="admin-form-actions">
+        <button id="matchSaveButton"
+                type="submit"
+                class="action action-primary">
+          Crea partita
+        </button>
+      </div>
+
+      <p id="matchFormMessage"
+         class="admin-feedback"
+         role="status"
+         aria-live="polite"
+         hidden></p>
+    </form>
+
+    <div class="admin-card admin-list-card">
+
+      <div class="admin-list-header">
+        <div>
+          <h3>Calendario partite</h3>
+          <p>
+            Apri le formazioni quando vengono
+            pubblicate le convocazioni ufficiali.
+          </p>
+        </div>
+
+        <button id="refreshMatches"
+                type="button"
+                class="admin-refresh"
+                aria-label="Aggiorna partite">↻</button>
+      </div>
+
+      <div id="adminMatchList"
+           class="admin-players"
+           aria-live="polite">
+        <p class="admin-empty">
+          Caricamento partite…
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+        <section id="fhAdminEventSection" hidden aria-label="Pubblica eventi in bacheca">
+  <h2>Bacheca · Nuova comunicazione</h2>
+  <p>Gli eventi automatici sono generati alla pubblicazione della giornata. Qui puoi aggiungere comunicazioni manuali.</p>
+  <form id="fhAdminEventForm">
+    <label for="fhAdminEventTitle">Titolo</label>
+    <input id="fhAdminEventTitle" type="text" maxlength="120" required placeholder="Titolo della comunicazione">
+    <label for="fhAdminEventBody">Messaggio</label>
+    <textarea id="fhAdminEventBody" maxlength="2500" required placeholder="Scrivi il testo da mostrare a tutti i fantallenatori"></textarea>
+    <button type="submit" id="fhAdminEventSend" class="action action-primary">Pubblica in bacheca</button>
+    <p id="fhAdminEventMessage" aria-live="polite"></p>
+  </form>
+</section>
+</section> <!-- Fine adminPage -->
+
+      </main>
+    </div>
+    <nav class="bottom-nav" aria-label="Menu principale mobile"><button class="nav-item is-active" type="button" data-nav="home" aria-current="page"><svg class="nav-icon" aria-hidden="true"><use href="#i-home"></use></svg><span>Home</span></button>
+<button class="nav-item" type="button" data-nav="formazione" ><svg class="nav-icon" aria-hidden="true"><use href="#i-shirt"></use></svg><span>Formazione</span></button>
+<button class="nav-item" type="button" data-nav="giocatori" ><svg class="nav-icon" aria-hidden="true"><use href="#i-team"></use></svg><span>Giocatori</span></button>
+<button class="nav-item" type="button" data-nav="classifica" ><svg class="nav-icon" aria-hidden="true"><use href="#i-trophy"></use></svg><span>Classifica</span></button>
+<button class="nav-item" type="button" data-nav="profilo" ><svg class="nav-icon" aria-hidden="true"><use href="#i-user"></use></svg><span>Profilo</span></button></nav>
+  </div>
+  <p id="message" class="global-message" role="alert" hidden></p>
+  <script src="./js/admin-matches.js"></script>
+  <script defer src="./js/home-match.js"></script>
+  <script defer src="./js/calendario-classifica.js"></script>
+  <script defer src="./js/team-logo.js"></script>
+  <script defer src="./js/figma-home.js"></script>
+<script defer src="./js/fh-team-push.js"></script>
+<script defer src="./js/fh-team-push.js"></script>
+<script defer src="./js/pwa.js"></script>
+</body>
+</html>
+</body>
+</html>
