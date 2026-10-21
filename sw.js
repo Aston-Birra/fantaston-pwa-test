@@ -1,7 +1,7 @@
 
 /* FANTASTON MANAGER - SERVICE WORKER */
 
-const CACHE_NAME = "fantaston-static-v1";
+const CACHE_NAME = "fantaston-static-v2";
 
 const CORE_FILES = [
   "./index.html",
@@ -20,20 +20,36 @@ self.addEventListener("install", (event) => {
 });
 
 // Attivazione: elimina le vecchie cache FANTASTON
+
+/* ATTIVAZIONE NUOVA VERSIONE */
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((names) => {
-      return Promise.all(
-        names
-          .filter((name) =>
-            name.startsWith("fantaston-static-") &&
-            name !== CACHE_NAME
-          )
-          .map((name) => caches.delete(name))
-      );
-    })
-  );
+  event.waitUntil((async () => {
+
+    const names = await caches.keys();
+
+    // Elimina soltanto le vecchie cache FANTASTON
+    await Promise.all(
+      names
+        .filter(name =>
+          name.startsWith("fantaston-static-") &&
+          name !== CACHE_NAME
+        )
+        .map(name => caches.delete(name))
+    );
+
+    // La nuova versione può controllare l'app
+    await self.clients.claim();
+
+  })());
 });
+
+/* ATTIVA UN AGGIORNAMENTO SU RICHIESTA DELL'APP */
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
 
 // Caricamento: prima la rete, poi la cache
 self.addEventListener("fetch", (event) => {
